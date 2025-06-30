@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: kafka-cloud-stream-app
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: filtered-consumer-group
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+    listener:
+      ack-mode: manual_immediate
+  cloud:
+    stream:
+      kafka:
+        streams:
+          binder:
+            configuration:
+              default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+              default.value.serde: org.springframework.kafka.support.serializer.JsonSerde
+              commit.interval.ms: 1000
+      bindings:
+        processMessages-in-0:
+          destination: input-messages-topic
+          content-type: application/json
+      function:
+        definition: processMessages
+
+logging:
+  level:
+    com.example.kafka: INFO
+    org.apache.kafka: WARN
+    org.springframework.kafka: INFO
+    org.springframework.cloud.stream: DEBUG
